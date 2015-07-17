@@ -1,1 +1,4 @@
-new AppView(model: new App()).$el.appendTo 'body'
+window.appModel = new App()
+window.appView = new AppView(model: appModel)
+window.appViewEl = appView.$el.appendTo 'body'
+
