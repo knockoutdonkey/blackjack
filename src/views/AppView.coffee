@@ -6,7 +6,9 @@ class window.AppView extends Backbone.View
   '
 
   events:
-    'click .hit-button': -> @model.get('playerHand').hit()
+    'click .hit-button': -> 
+      if not @model.get 'winner'
+        @model.get('playerHand').hit()
     'click .stand-button': -> @model.get('playerHand').stand()
     'click .restart-button': -> 
       @model.restart()

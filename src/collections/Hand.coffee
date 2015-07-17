@@ -10,10 +10,10 @@ class window.Hand extends Backbone.Collection
     # @set "isPlaying", true
 
   hit: ->
-    if @scores()[0] < 21
-      card = @deck.pop()
-      @add(card)
-      card
+    card = @deck.pop()
+    @add(card)
+    card
+    if @scores()[0] > 21 then @stand()
 
   hasAce: -> @reduce (memo, card) ->
     memo or card.get('value') is 1
@@ -27,11 +27,13 @@ class window.Hand extends Backbone.Collection
     score + if card.get 'revealed' then card.get 'value' else 0
   , 0
 
-  playOut: -> 
+  playOut: (otherScore)-> 
     @forEach (card)->
       if not card.get "revealed" then card.flip()
 
-    while @scores()[0] < 17
+    if otherScore > 21 then return
+
+    while @scores()[0] < otherScore
       @hit()
 
   scores: ->

@@ -10,7 +10,7 @@ class window.App extends Backbone.Model
     @set 'playerHand', deck.dealPlayer()
     @set 'dealerHand', deck.dealDealer()
     @get('playerHand').on "finished", (hand) =>
-      @get('dealerHand').playOut()
+      @get('dealerHand').playOut @get('playerHand').scores()[0]
       @decideWinner()
       console.log "finished event heard"
 
@@ -18,7 +18,7 @@ class window.App extends Backbone.Model
     console.log "decidedWinner"
     playerScore = @get('playerHand').scores()[0]
     dealerScore = @get('dealerHand').scores()[0]
-    if playerScore > dealerScore
+    if (playerScore > dealerScore or dealerScore > 21) and playerScore <= 21
       @get('playerHand').win()
       @get('dealerHand').lose()
       @set 'winner', @get('playerHand')
@@ -29,3 +29,4 @@ class window.App extends Backbone.Model
 
   restart: ->
     @initialize();
+    @set("winner", null)
