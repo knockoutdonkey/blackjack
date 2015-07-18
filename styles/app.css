@@ -13,8 +13,17 @@
 
 .hand {
   overflow: auto;
+  color: white;
 }
 
 img{
   width: 100%;
+}
+
+body{
+  background-image: url("../img/felt.png");
+}
+
+.player-container{
+  color: yellow;
 }

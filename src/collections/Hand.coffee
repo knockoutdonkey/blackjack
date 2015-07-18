@@ -19,6 +19,17 @@ class window.Hand extends Backbone.Collection
     memo or card.get('value') is 1
   , 0
 
+  hasBlackJack: -> 
+    if @length is 2
+      ace = false
+      ten = false
+      @forEach (card)-> 
+        if card.value is 10 then ten is true
+        if card.rankName is "Ace" then ace is true
+    ace and ten
+
+
+
   lose: -> 
     @isWinner = false
     @isPlaying = false
@@ -33,7 +44,7 @@ class window.Hand extends Backbone.Collection
 
     if otherScore > 21 then return
 
-    while @scores()[0] < otherScore
+    while @scores()[0] < 17
       @hit()
 
   scores: ->
