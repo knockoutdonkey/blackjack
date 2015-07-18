@@ -5,15 +5,13 @@ class window.Hand extends Backbone.Collection
   #   "isWinner": undefined
   #   "isPlaying": true
 
-  initialize: (array, @deck, @isDealer, @isWinner = false, @isPlaying = true) ->
-    # @set "isWinner", undefined
-    # @set "isPlaying", true
+  initialize: (array, @deck, @isDealer, @status="Playing") ->
 
   hit: ->
-    card = @deck.pop()
+    card = @deck.draw()
     @add(card)
     card
-    if @scores()[0] > 21 then @stand()
+    if @score() > BJRules.MaxScore then @stand()
 
   hasAce: -> @reduce (memo, card) ->
     memo or card.get('value') is 1
@@ -31,8 +29,7 @@ class window.Hand extends Backbone.Collection
 
 
   lose: -> 
-    @isWinner = false
-    @isPlaying = false
+    @status = "Loser"
 
   minScore: -> @reduce (score, card) ->
     score + if card.get 'revealed' then card.get 'value' else 0
@@ -42,20 +39,25 @@ class window.Hand extends Backbone.Collection
     @forEach (card)->
       if not card.get "revealed" then card.flip()
 
-    if otherScore > 21 then return
+    if otherScore > BJRules.MaxScore then return
 
-    while @scores()[0] < 17
+    while @score() < BJRules.DealerMax
       @hit()
 
-  scores: ->
+  score: ->
     # The scores are an array of potential scores.
     # Usually, that array contains one element. That is the only score.
     # when there is an ace, it offers you two scores - the original score, and score + 10.
-    [@minScore(), @minScore() + 10 * @hasAce()]
+    if @minScore() <= 11
+      return @minScore() + 10 * @hasAce()
+    return @minScore()
+     
 
   stand: -> 
     @trigger "finished", @
 
+  tie: ->
+    @status = "Tie"
+
   win: ->
-    @isWinner = true
-    @isPlaying = false
+    @status = "Winner"

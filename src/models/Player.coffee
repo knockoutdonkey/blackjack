@@ -13,8 +13,11 @@ class window.Player extends Backbone.Model
     @set "bet", amount
     @set "chips", (@get "chips") - @get "bet"
 
+  tie: ->
+    @set "chips", @get("chips") + @get("bet")
+
   win: ->
     if @get('hand').hasBlackJack()
-      @set "chips", (@get("chips") + Math.floor(@get("bet") * 2.5))
+      @set "chips", (@get("chips") + Math.floor(@get("bet") * BJRules.BlackJackBonus))
     else
-      @set "chips", @get("chips") + @get("bet") * 2
+      @set "chips", @get("chips") + @get("bet") * BJRules.NormalBonus
