@@ -10,8 +10,8 @@ class window.Hand extends Backbone.Collection
   hit: ->
     card = @deck.draw()
     @add(card)
-    card
     if @score() > BJRules.MaxScore then @stand()
+    card
 
   hasAce: -> @reduce (memo, card) ->
     memo or card.get('value') is 1
@@ -22,8 +22,9 @@ class window.Hand extends Backbone.Collection
       ace = false
       ten = false
       @forEach (card)-> 
-        if card.value is 10 then ten is true
-        if card.rankName is "Ace" then ace is true
+        console.log card
+        if card.get("value") is 10 then ten = true
+        if card.get("rankName") is "Ace" then ace = true
     ace and ten
 
 
