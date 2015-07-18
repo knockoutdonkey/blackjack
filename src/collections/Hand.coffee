@@ -1,9 +1,9 @@
 class window.Hand extends Backbone.Collection
   model: Card
 
-  # defaults: 
-  #   "isWinner": undefined
-  #   "isPlaying": true
+  dealerReveal: ->
+    @.slice(1).forEach (card) ->
+      card.flip()
 
   initialize: (array, @deck, @isDealer, @status="Playing") ->
 
@@ -27,18 +27,24 @@ class window.Hand extends Backbone.Collection
         if card.get("rankName") is "Ace" then ace = true
     ace and ten
 
-
+  hide: ->
+    @forEach (card)->
+      if card.get "revealed" then card.flip()
+  
+  show: ->
+    @forEach (card)->
+      if not card.get "revealed" then card.flip()
 
   lose: -> 
     @status = "Loser"
+    @trigger("change",@)
 
   minScore: -> @reduce (score, card) ->
     score + if card.get 'revealed' then card.get 'value' else 0
   , 0
 
   playOut: (otherScore)-> 
-    @forEach (card)->
-      if not card.get "revealed" then card.flip()
+    @show()
 
     if otherScore > BJRules.MaxScore then return
 
@@ -59,6 +65,9 @@ class window.Hand extends Backbone.Collection
 
   tie: ->
     @status = "Tie"
+    @trigger("change",@)
+
 
   win: ->
     @status = "Winner"
+    @trigger("change",@)

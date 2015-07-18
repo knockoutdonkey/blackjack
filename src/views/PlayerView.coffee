@@ -8,13 +8,13 @@ class window.PlayerView extends Backbone.View
       amount = $(".betting-field").val()
       if not isNaN(amount)
         @model.bet(amount)
-      console.log("button-pressed")
 
   initialize: ->
     @render()
-    @model.on "change:chips", =>
+    @model.on "change:chips change:phase", =>
       @render()
 
   render: ->
+    @$el.children().detach()
     @$el.html @template @model.attributes
     @$('.player-hand-container').html new HandView(collection: @model.get 'hand').el

@@ -15,9 +15,11 @@ class window.Player extends Backbone.Model
   bet: (amount) ->
     if @get("phase") is "betting"
       if amount <= @get 'chips'
-        @set "bet", amount
+        @set "bet", Number(amount)
         @set "chips", (@get "chips") - @get "bet"
         @set "phase", "ready"
+        @get("hand").show()
+        @trigger("ready",@)
 
   lose: ->
     @get('hand').lose()
@@ -33,17 +35,17 @@ class window.Player extends Backbone.Model
       @get('hand').stand()
 
   tie: ->
-    @set "chips", @get("chips") + @get("bet")
     @get('hand').tie()
     @set 'phase', 'betting'
+    @set "chips", @get("chips") + @get("bet")
 
   win: ->
+    @get('hand').win()
+    @set 'phase', 'betting'
     if @get('hand').hasBlackJack()
       @set "chips", (@get("chips") + Math.floor(@get("bet") * BJRules.BlackJackBonus))
     else
       @set "chips", @get("chips") + @get("bet") * BJRules.NormalBonus
-    @get('hand').win()
-    @set 'phase', 'betting'
 
   score: ->
     @get('hand').score()
