@@ -11,16 +11,16 @@ class window.App extends Backbone.Model
     @setUpGame()
 
   setUpGame: ->
-    @set 'playerHand', (@get 'deck').dealPlayer()
+    hand = (@get 'deck').dealPlayer()
     @set 'dealerHand', (@get 'deck').dealDealer()
-    @get('player').giveHand(@get 'playerHand')
+    @get('player').giveHand(hand)
 
     # @takeBets()
     @get('player').on "ready", =>
 
 
-    @get('playerHand').on "finished", (hand) =>
-      @get('dealerHand').playOut @get('playerHand').score()
+    hand.on "finished", (hand) =>
+      @get('dealerHand').playOut hand.score()
       @decideWinner()
       console.log "finished event heard"
 
@@ -29,22 +29,20 @@ class window.App extends Backbone.Model
 
   decideWinner: ->
     console.log "decidedWinner"
-    playerScore = @get('playerHand').score()
+    playerScore = @get('player').score()
     dealerScore = @get('dealerHand').score()
-    if (playerScore > dealerScore or dealerScore > 21) and playerScore <= 21
-      @get('playerHand').win()
+    if (playerScore > dealerScore or dealerScore > BJRules.MaxScore) and playerScore <= BJRules.MaxScore
       @get('player').win()
       @get('dealerHand').lose()
-      @set 'winner', @get('playerHand')
+      @set 'winner', @get('player')
 
     else if playerScore is dealerScore
-      @get('playerHand').tie()
       @get('player').tie()
       @get('dealerHand').tie()
-      @set 'winner', @get('playerHand')
+      @set 'winner', @get('player')
 
     else
-      @get('playerHand').lose()
+      @get('player').lose()
       @get('dealerHand').win()
       @set 'winner', @get('dealerHand')
 

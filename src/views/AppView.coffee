@@ -1,7 +1,6 @@
 class window.AppView extends Backbone.View
   template: _.template '
     <button class="hit-button">Hit</button> <button class="stand-button">Stand</button> <button class="restart-button">Restart</button>
-    <div class="player-hand-container"></div>
     <div class="player-container"></div>
     <div class="dealer-hand-container"></div>
   '
@@ -9,8 +8,8 @@ class window.AppView extends Backbone.View
   events:
     'click .hit-button': -> 
       if not @model.get 'winner'
-        @model.get('playerHand').hit()
-    'click .stand-button': -> @model.get('playerHand').stand()
+        @model.get('player').hit()
+    'click .stand-button': -> @model.get('player').stand()
     'click .restart-button': -> 
       @model.restart()
       @render()
@@ -24,7 +23,6 @@ class window.AppView extends Backbone.View
   render: ->
     @$el.children().detach()
     @$el.html @template()
-    @$('.player-hand-container').html new HandView(collection: @model.get 'playerHand').el
     @$('.dealer-hand-container').html new HandView(collection: @model.get 'dealerHand').el
     @$('.player-container').html new PlayerView(model: @model.get 'player').el
     @$('.winner').html 
