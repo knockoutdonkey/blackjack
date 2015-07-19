@@ -21,7 +21,9 @@ img{
 }
 
 body{
-  background-image: url("../img/felt.png");
+  background-image: url("../img/green-felt.png");
+/*  background-size: contain;
+*/  background-size: cover;
 }
 
 .players-container{
