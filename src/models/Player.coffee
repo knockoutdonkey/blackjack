@@ -11,8 +11,11 @@ class window.Player extends Backbone.Model
 
   giveHand: (hand) ->
     @set 'hand', hand
+    @get('hand').on 'finished', =>
+      @stand()
 
   bet: (amount) ->
+    console.log amount
     if @get("phase") is "betting"
       if amount <= @get 'chips'
         @set "bet", Number(amount)
@@ -27,12 +30,16 @@ class window.Player extends Backbone.Model
 
   hit: ->
     console.log(@get "phase")
-    if @get("phase") isnt "betting"
+    if @get("phase") is "playing"
       @get("hand").hit()
 
+  play: ->
+    @set 'phase', 'playing'
+
   stand: ->
-    if @get("phase") isnt "betting"
-      @get('hand').stand()
+    if @get("phase") is "playing"
+      @set 'phase', 'finished'
+      @trigger 'finished', @
 
   tie: ->
     @get('hand').tie()

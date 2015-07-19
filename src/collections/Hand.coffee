@@ -14,7 +14,7 @@ class window.Hand extends Backbone.Collection
     card
 
   hasAce: -> @reduce (memo, card) ->
-    memo or card.get('value') is 1
+    memo or (card.get('value') is 1 and card.get 'revealed')
   , 0
 
   hasBlackJack: -> 
@@ -46,7 +46,7 @@ class window.Hand extends Backbone.Collection
   playOut: (otherScore)-> 
     @show()
 
-    if otherScore > BJRules.MaxScore then return
+    if otherScore is 0 return
 
     while @score() < BJRules.DealerMax
       @hit()
